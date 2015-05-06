@@ -1,23 +1,51 @@
+Messages = new Mongo.Collection("messages");
+
 if (Meteor.isClient) {
-  // counter starts at 0
-  Session.setDefault('counter', 0);
+  Meteor.subscribe("messages");
 
-  Template.hello.helpers({
-    counter: function () {
-      return Session.get('counter');
+  Template.body.helpers({
+    messages: function () {
+      return Messages.find({}, {sort: {createdAt: 1}});
     }
   });
 
-  Template.hello.events({
-    'click button': function () {
-      // increment the counter when button is clicked
-      Session.set('counter', Session.get('counter') + 1);
+  Template.message_input.events({
+    "submit .new-message": function (event) {
+      var message = event.target.text.value;
+
+      Meteor.call("addMessage", message);
+
+      event.target.text.value = "";
+
+      // prevent default form submit
+      return false;
     }
   });
-}
+
+  Accounts.ui.config({
+    passwordSignupFields: "USERNAME_ONLY"
+  });
+};
 
 if (Meteor.isServer) {
-  Meteor.startup(function () {
-    // code to run on server at startup
+  // publish all the messages.
+  Meteor.publish("messages", function() {
+    return Messages.find({}, {sort: {createdAt: 1}});
   });
-}
+
+};
+
+Meteor.methods({
+  addMessage: function (message) {
+    if(! Meteor.userId()) {
+      throw new Meteor.Error("Not authorized.");
+    }
+
+    Messages.insert({
+      message: message,
+      createdAt: new Date(),
+      owner: Meteor.userId(),
+      username: Meteor.user().username
+    });
+  }
+});

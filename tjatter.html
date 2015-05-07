@@ -1,18 +1,22 @@
 <head>
+  <script src="//code.jquery.com/jquery-1.11.3.min.js">
+    $( ".chat-box" ).scrollTop($(".chat-box").height());
+  </script>
+
   <title>tjatter</title>
 </head>
 
 <body>
-  <div>
+  <div class="container">
     <h1>Tjatter! Det va ett jäääävla tjöt.</h1>
 
     {{> loginButtons}}
+      <div class="chat-box">
+        {{#each messages}}
+          {{> message}}
+        {{/each}}
+      </div>
 
-    <ul>
-      {{#each messages}}
-        {{> message}}
-      {{/each}}
-    </ul>
     {{#if currentUser}}
       {{> message_input}}
     {{/if}}
@@ -20,12 +24,11 @@
 </body>
 
 <template name="message">
-  <li>
-    <span class="chat-msg">{{createdAt}} - <strong>{{username}}</strong> - {{message}}</span>
-  </li>
+  <span class="chat-msg">{{formatTimestamp createdAt}} - <strong>{{username}}</strong> - {{message}} <br /></span>
 </template>
 
 <template name="message_input">
+  <div class="error-msg"></div>
   <form class="new-message">
     <input type="text" name="text" placeholder="Message here, press enter when done." />
   </form>

@@ -9,14 +9,25 @@ if (Meteor.isClient) {
     }
   });
 
+  Template.message.rendered = function () {
+    $('.chat-box').scrollTop( $('.chat-box').prop("scrollHeight") );
+  };
+
+  Template.registerHelper("formatTimestamp", function (timestamp) {
+    return moment(new Date(timestamp)).format("hh:mm:ss");
+  });
+
   Template.message_input.events({
     "submit .new-message": function (event) {
       var message = event.target.text.value;
 
-      Meteor.call("addMessage", message);
-
-      event.target.text.value = "";
-
+      if(message) {
+          Meteor.call("addMessage", message);
+          event.target.text.value = "";
+          $('.error-msg').text('');
+      } else {
+        $('.error-msg').text('You can\'t send nothing. Please write something');
+      }
       // prevent default form submit
       return false;
     }

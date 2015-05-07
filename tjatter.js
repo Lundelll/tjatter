@@ -20,7 +20,7 @@ if (Meteor.isClient) {
 
   // Always keep the scroll at the bottom.
   Template.message.rendered = function () {
-    $('.chat-box').scrollTo( $('.chat-box').prop("scrollHeight") );
+    $('.chat-box').scrollTop( $('.chat-box').prop("scrollHeight") );
   };
 
   Template.registerHelper("formatTimestamp", function (timestamp) {

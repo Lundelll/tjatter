@@ -8,14 +8,19 @@
 
 <body>
   <div class="container">
-    <h1>Tjatter! Det va ett jäääävla tjöt.</h1>
+    <h1>Tjatter!</h1>
+    <h4>Det va ett jävla tjöt!</h4>
 
     {{> loginButtons}}
-      <div class="chat-box">
-        {{#each messages}}
-          {{> message}}
-        {{/each}}
-      </div>
+
+    {{#if isAdmin}}
+      <input type="button" id="removeMessages" value="Clear Messages" />
+    {{/if}}
+    <div class="chat-box">
+      {{#each messages}}
+        {{> message}}
+      {{/each}}
+    </div>
 
     {{#if currentUser}}
       {{> message_input}}

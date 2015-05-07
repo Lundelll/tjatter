@@ -6,11 +6,21 @@ if (Meteor.isClient) {
   Template.body.helpers({
     messages: function () {
       return Messages.find({}, {sort: {createdAt: 1}});
+    },
+    isAdmin: function () {
+      return Meteor.user().username === "Lundell";
     }
   });
 
+  Template.body.events({
+    "click #removeMessages": function() {
+      Meteor.call("clearMessages");
+    }
+  });
+
+  // Always keep the scroll at the bottom.
   Template.message.rendered = function () {
-    $('.chat-box').scrollTop( $('.chat-box').prop("scrollHeight") );
+    $('.chat-box').scrollTo( $('.chat-box').prop("scrollHeight") );
   };
 
   Template.registerHelper("formatTimestamp", function (timestamp) {
@@ -41,7 +51,9 @@ if (Meteor.isClient) {
 if (Meteor.isServer) {
   // publish all the messages.
   Meteor.publish("messages", function() {
-    return Messages.find({}, {sort: {createdAt: 1}});
+    var lastHour = new Date();
+    lastHour.setHours(lastHour.getHours() -1);
+    return Messages.find({createdAt: {$gt: lastHour}}, {sort: {createdAt: 1}});
   });
 
 };
@@ -58,5 +70,12 @@ Meteor.methods({
       owner: Meteor.userId(),
       username: Meteor.user().username
     });
+  },
+  clearMessages: function () {
+    if(! Meteor.userId() || ! Meteor.user().username === "Lundell") {
+      throw new Meteor.Error("Not an admin");
+    }
+
+    Messages.remove({});
   }
 });

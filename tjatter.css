@@ -1,19 +1,31 @@
 /* CSS declarations go here */
+html, body {
+  max-height: 100vh;
+  margin: 0;
+}
+
 .container {
-  max-height: 600px;
-  width: 800px;
+  width: 60vw;
+  height: 90vh;
   margin: 0 auto;
+  float: center;
 }
 
 .chat-box {
-  height: 800px;
   border: solid 2px black;
   overflow: auto;
+  max-height: 60%;
+  min-height: 50px;
+  margin: auto;
+}
+
+.new-message {
+  height: 20%;
 }
 
 input {
   width: 100%;
-  margin-top: 2px;
+  height: 20px;
 }
 
 .error-msg {
